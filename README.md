@@ -21,4 +21,4 @@ To verify that the wrapper is functioning, `M-x eglot-events-buffer` and look at
 
 ## Testing
 
-You can `M-x eglot-booster` to disable the booster at any time.  Then `M-x eglot-shutdown-all` and 
+Maybe you don't even need this.  You can `M-x eglot-booster` to disable the booster at any time.  Then `M-x eglot-shutdown-all`, restart eglot (`M-x eglot` is usually enough) in a large/heavy-weight file, and compare.
