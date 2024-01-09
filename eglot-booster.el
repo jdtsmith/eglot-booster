@@ -80,22 +80,28 @@ If UNWRAP is non-nil, remove the wrapping."
     (dolist (entry eglot-server-programs)
       (cond
        ((functionp (cdr entry))
-	(cl-incf cnt)
 	(if unwrap			; restore old function
-	    (when-let ((old-fun (funcall (cdr entry) nil 'old-func)))
+	    (when-let ((old-fun
+			(condition-case nil
+			    (funcall (cdr entry) nil 'old-func)
+			  (wrong-number-of-arguments nil))))
+	      (cl-incf cnt)
 	      (setcdr entry old-fun))
-	  (let ((fun (cdr entry)))
+	  (cl-incf cnt)
+	  (let ((this-fun (cdr entry)))
 	    (setcdr entry (lambda (interactive &optional return-old-func)
-			    (if return-old-func fun
-			      (let ((res (funcall fun interactive)))
+			    (if return-old-func this-fun
+			      (let ((res (funcall this-fun interactive)))
 				(if (eglot-booster-plain-command res)
 				    (append boost res)
 				  res))))))))
        ((eglot-booster-plain-command (cdr entry))
-	(cl-incf cnt)
-	(setcdr entry (if unwrap
-			  (seq-subseq (cdr entry) (length boost))
-			(append boost (cdr entry)))))))
+	(if unwrap
+	    (when (string= (cadr entry) (car boost))
+	      (cl-incf cnt)
+	      (setcdr entry (seq-subseq (cdr entry) (length boost))))
+	  (setcdr entry (append boost (cdr entry)))
+	  (cl-incf cnt)))))
     (message "%s %d eglot-server-programs%s"
 	     (if unwrap "Removed boost from" "Boosted") cnt
 	     (if unwrap " (restart eglot processes to take effect)" ""))))
@@ -115,10 +121,13 @@ be boosted."
       (user-error "The emacs-lsp-booster program is not installed"))
     (advice-add 'jsonrpc--json-read :around #'eglot-booster--jsonrpc--json-read)
     (add-hook 'eglot-server-initialized-hook #'eglot-booster--init)
-    (eglot-booster--wrap))
+    (unless (get 'eglot-booster-mode 'boosted)
+      (eglot-booster--wrap)
+      (put 'eglot-booster-mode 'boosted t)))
    (t (advice-remove 'jsonrpc--json-read #'eglot-booster--jsonrpc--json-read)
       (remove-hook 'eglot-server-initialized-hook #'eglot-booster--init)
-      (eglot-booster--wrap 'unwrap))))
+      (eglot-booster--wrap 'unwrap)
+      (put 'eglot-booster-mode 'boosted nil))))
 
 (provide 'eglot-booster)
 ;;; eglot-booster.el ends here
