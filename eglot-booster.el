@@ -3,7 +3,7 @@
 
 ;; Author: J.D. Smith
 ;; Homepage: https://github.com/jdtsmith/eglot-booster
-;; Package-Requires: ((emacs "29.1") jsonrpc eglot seq)
+;; Package-Requires: ((emacs "29.1") (jsonrpc "1.0") (eglot "1.0") (seq "2.24"))
 ;; Version: 0.0.1
 ;; Keywords: convenience, programming
 ;; Prefix: eglot-booster
