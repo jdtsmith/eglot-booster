@@ -4,7 +4,7 @@ The [emacs-lsp-booster](https://github.com/blahgeek/emacs-lsp-booster) project p
 
 ## Install/Usage
 
-Install directly from this repo via `package-vc-install`, or using e.g. `straight`.  Then, in your init, simply 
+Install directly from this repo via `M-x package-vc-install` (pasting in this URL), or using, e.g. `straight`.  Then, in your init, simply 
 
 ```elisp
 (use-package eglot-booster
