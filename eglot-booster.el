@@ -49,7 +49,7 @@
   "Test if command COM is a plain eglot server command."
   (and (consp com)
        (not (integerp (cadr com)))
-       (not (seq-intersection '(:initializationOptions :autoport) com))))
+       (not (memq :autoport com))))
 
 (defvar-local eglot-booster-boosted nil)
 (defun eglot-booster--jsonrpc--json-read (orig-func)
