@@ -89,7 +89,7 @@ If UNWRAP is non-nil, remove the wrapping."
 	      (setcdr entry old-fun))
 	  (cl-incf cnt)
 	  (let ((this-fun (cdr entry)))
-	    (setcdr entry (lambda (interactive &optional return-old-func)
+	    (setcdr entry (lambda (&optional interactive return-old-func)
 			    (if return-old-func this-fun
 			      (let ((res (funcall this-fun interactive)))
 				(if (eglot-booster-plain-command res)
