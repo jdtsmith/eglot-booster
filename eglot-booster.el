@@ -43,6 +43,11 @@
 (require 'eglot)
 (require 'jsonrpc)
 
+(defcustom eglot-booster-no-remote-boost nil
+  "If non-nil, do not boost remote hosts."
+  :group 'eglot
+  :type 'boolean)
+
 (defun eglot-booster-plain-command (com)
   "Test if command COM is a plain eglot server command."
   (and (consp com)
@@ -77,6 +82,7 @@
   "Wrap contact within ARGS if possible."
   (let ((contact (nth 3 args)))
     (cond
+     ((and eglot-booster-no-remote-boost (file-remote-p default-directory)))
      ((functionp contact)
       (setf (nth 3 args)
 	    (lambda (&optional interactive)
