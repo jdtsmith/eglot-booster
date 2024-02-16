@@ -17,7 +17,7 @@ Then just use eglot as normal.  You should notice no differences other than spee
 To verify that the wrapper is functioning, `M-x eglot-events-buffer` and look at the beginning for `emacs_lsp_booster::app` notices.  If you'd like to avoid boosting remote servers (those run over TRAMP), set `eglot-booster-no-remote-boost` to `t`. 
 
 > [!IMPORTANT]
-> At present only local lsp server programs which communicate by standard input/output can be wrapped, not lsp servers communicating over network ports (local or remote).
+> At present only local or remote (tramp-based) lsp server programs which communicate by standard input/output can be wrapped, not lsp servers communicating over network ports (local or remote).  Using remote servers over tramp requires installing `emacs-lsp-booster` on the remote server.
 
 ## Testing
 
