@@ -71,9 +71,14 @@
   (when-let ((server)
 	     (proc (jsonrpc--process server))
 	     (com (process-command proc))
-	     ((string-search "emacs-lsp-booster" (car-safe com)))
 	     (buf (process-buffer proc)))
-    (setf (buffer-local-value 'eglot-booster-boosted buf) t)))
+    (unless (and (file-remote-p default-directory) eglot-booster-no-remote-boost)
+      (if (file-remote-p default-directory) ; com will likely be /bin/sh -i or so
+	  (when (seq-find (apply-partially #'string-search "emacs-lsp-booster")
+			  (process-get proc 'remote-command)) ; tramp applies this
+	    (setf (buffer-local-value 'eglot-booster-boosted buf) t))
+	(when (string-search "emacs-lsp-booster" (car-safe com))
+	  (setf (buffer-local-value 'eglot-booster-boosted buf) t))))))
 
 (defvar eglot-booster--boost
   '("emacs-lsp-booster" "--json-false-value" ":json-false" "--"))
