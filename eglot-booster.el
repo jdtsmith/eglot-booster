@@ -76,9 +76,9 @@
       (if (file-remote-p default-directory) ; com will likely be /bin/sh -i or so
 	  (when (seq-find (apply-partially #'string-search "emacs-lsp-booster")
 			  (process-get proc 'remote-command)) ; tramp applies this
-	    (setf (buffer-local-value 'eglot-booster-boosted buf) t))
+	    (with-current-buffer buf (setq eglot-booster-boosted t)))
 	(when (string-search "emacs-lsp-booster" (car-safe com))
-	  (setf (buffer-local-value 'eglot-booster-boosted buf) t))))))
+	  (with-current-buffer buf (setq eglot-booster-boosted t)))))))
 
 (defvar eglot-booster--boost
   '("emacs-lsp-booster" "--json-false-value" ":json-false" "--"))
