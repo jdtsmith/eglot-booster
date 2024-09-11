@@ -52,6 +52,7 @@
   "Test if command COM is a plain eglot server command."
   (and (consp com)
        (not (integerp (cadr com)))
+       (not (keywordp (car com)))
        (not (memq :autoport com))))
 
 (defvar-local eglot-booster-boosted nil)
