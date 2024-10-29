@@ -4,7 +4,7 @@
 ;; Author: J.D. Smith
 ;; Homepage: https://github.com/jdtsmith/eglot-booster
 ;; Package-Requires: ((emacs "29.1") (jsonrpc "1.0") (eglot "1.0") (seq "2.24"))
-;; Version: 0.0.2
+;; Version: 0.1.0
 ;; Keywords: convenience, programming
 ;; Prefix: eglot-booster
 ;; Separator: -
@@ -48,6 +48,12 @@
   :group 'eglot
   :type 'boolean)
 
+(defcustom eglot-booster-io-only nil
+  "If non-nil, do not translate JSON into bytecode.
+I/O buffering is still performed."
+  :group 'eglot
+  :type 'boolean)
+
 (defun eglot-booster-plain-command (com)
   "Test if command COM is a plain eglot server command."
   (and (consp com)
@@ -83,10 +89,15 @@
 
 (defvar eglot-booster--boost
   '("emacs-lsp-booster" "--json-false-value" ":json-false" "--"))
+(defvar eglot-booster--boost-io-only
+  '("emacs-lsp-booster" "--disable-bytecode" "--"))
 
 (defun eglot-booster--wrap-contact (args)
   "Wrap contact within ARGS if possible."
-  (let ((contact (nth 3 args)))
+  (let ((contact (nth 3 args))
+	(def-args (if eglot-booster-io-only
+		      eglot-booster--boost-io-only
+		    eglot-booster--boost)))
     (cond
      ((and eglot-booster-no-remote-boost (file-remote-p default-directory)))
      ((functionp contact)
@@ -94,10 +105,10 @@
 	    (lambda (&optional interactive)
 	      (let ((res (funcall contact interactive)))
 		(if (eglot-booster-plain-command res)
-		    (append eglot-booster--boost res)
+		    (append def-args res)
 		  res)))))
      ((eglot-booster-plain-command contact)
-      (setf (nth 3 args) (append eglot-booster--boost contact))))
+      (setf (nth 3 args) (append def-args contact))))
     args))
 
 ;;;###autoload
@@ -113,7 +124,8 @@ be boosted."
     (unless (executable-find "emacs-lsp-booster")
       (setq eglot-booster-mode nil)
       (user-error "The emacs-lsp-booster program is not installed"))
-    (advice-add 'jsonrpc--json-read :around #'eglot-booster--jsonrpc--json-read)
+    (unless eglot-booster-io-only
+      (advice-add 'jsonrpc--json-read :around #'eglot-booster--jsonrpc--json-read))
     (advice-add 'eglot--connect :filter-args #'eglot-booster--wrap-contact)
     (add-hook 'eglot-server-initialized-hook #'eglot-booster--init))
    (t

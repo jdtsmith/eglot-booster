@@ -22,3 +22,7 @@ To verify that the wrapper is functioning, `M-x eglot-events-buffer` and look at
 ## Testing
 
 Maybe you don't even need this.  You can `M-x eglot-booster` to disable the boost at any time.  Then `M-x eglot-shutdown-all`, restart eglot (`M-x eglot` is usually enough) in a large/heavy-weight file, and compare performance before and after.
+
+## I/O Only
+
+`emacs-lsp-booster` offers the option `--disable-bytecode`.  Setting `eglot-booster-io-only=t` will use this option, processing JSON as normal.  This way you still get the benefit of I/O buffering, but can use Emacs' native JSON parser (which was substantially sped-up in v30).
