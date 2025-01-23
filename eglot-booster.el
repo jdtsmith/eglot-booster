@@ -54,6 +54,19 @@ I/O buffering is still performed."
   :group 'eglot
   :type 'boolean)
 
+(defcustom eglot-booster-verbose nil
+  "If non-nil, start the booster with verbose output."
+  :group 'eglot
+  :type 'boolean)
+
+
+(defun eglot-booster--make-boost-command (&optional args)
+  "Return the command to boost an eglot server with ARGS."
+  ;; use "emacs-lsp-booster" ARGS VERBOSE "--" to boost
+  (append (if eglot-booster-verbose
+              '("emacs-lsp-booster" "--verbose")
+            '("emacs-lsp-booster")) args '("--")))
+
 (defun eglot-booster-plain-command (com)
   "Test if command COM is a plain eglot server command."
   (and (consp com)
@@ -87,17 +100,20 @@ I/O buffering is still performed."
 	(when (string-search "emacs-lsp-booster" (car-safe com))
 	  (with-current-buffer buf (setq eglot-booster-boosted t)))))))
 
-(defvar eglot-booster--boost
-  '("emacs-lsp-booster" "--json-false-value" ":json-false" "--"))
-(defvar eglot-booster--boost-io-only
-  '("emacs-lsp-booster" "--disable-bytecode" "--"))
+(defun eglot-booster--boost ()
+  "Return the command to boost an eglot server."
+  (eglot-booster--make-boost-command '("--json-false-value" ":json-false")))
+
+(defun eglot-booster--boost-io-only ()
+  "Return the command to boost an eglot server with I/O only."
+  (eglot-booster--make-boost-command '("--disable-bytecode")))
 
 (defun eglot-booster--wrap-contact (args)
   "Wrap contact within ARGS if possible."
   (let ((contact (nth 3 args))
 	(def-args (if eglot-booster-io-only
-		      eglot-booster--boost-io-only
-		    eglot-booster--boost)))
+		      (eglot-booster--boost-io-only)
+		    (eglot-booster--boost))))
     (cond
      ((and eglot-booster-no-remote-boost (file-remote-p default-directory)))
      ((functionp contact)
