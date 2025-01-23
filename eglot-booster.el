@@ -62,7 +62,6 @@ I/O buffering is still performed."
 
 (defun eglot-booster--make-boost-command (&optional args)
   "Return the command to boost an eglot server with ARGS."
-  ;; use "emacs-lsp-booster" ARGS VERBOSE "--" to boost
   (append (if eglot-booster-verbose
               '("emacs-lsp-booster" "--verbose")
             '("emacs-lsp-booster")) args '("--")))
