@@ -25,4 +25,7 @@ Maybe you don't even need this.  You can `M-x eglot-booster` to disable the boos
 
 ## I/O Only
 
+> [!NOTE]
+> Emacs v30 introduced a much faster JSON parser.  [Testing](https://www.reddit.com/r/emacs/comments/1jsxamc/the_new_json_parser_is_fast/) shows that it decodes faster than elisp bytecode, but the I/O takes longer.  So with bytecode disabled, lightweight messages from server->Emacs go a bit slower, and heavy messages go faster.  Definitely worth testing.
+
 `emacs-lsp-booster` offers the option `--disable-bytecode`.  Setting `eglot-booster-io-only=t` will use this option, processing JSON as normal.  This way you still get the benefit of I/O buffering, but can use Emacs' native JSON parser (which was substantially sped-up in v30).
