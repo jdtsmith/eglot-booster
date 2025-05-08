@@ -12,6 +12,15 @@ Install directly from this repo via `M-x package-vc-install` (pasting in this UR
 	:config	(eglot-booster-mode))
 ```
 
+If you're using straight, use this instead:
+
+```elisp
+(use-package eglot-booster
+	:straight ( eglot-booster :type git :host nil :repo "https://github.com/jdtsmith/eglot-booster")
+	:after eglot
+	:config (eglot-booster-mode))
+```
+
 Then just use eglot as normal.  You should notice no differences other than speedier performance and less I/O blocking.
 
 To verify that the wrapper is functioning, `M-x eglot-events-buffer` and look at the beginning for `emacs_lsp_booster::app` notices.  If you'd like to avoid boosting remote servers (those run over TRAMP), set `eglot-booster-no-remote-boost` to `t`. 
