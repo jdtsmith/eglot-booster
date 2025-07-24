@@ -26,7 +26,7 @@
 
 ;; This small minor mode boosts eglot with emacs-lsp-booster.
 ;; Using it is simple:
-;; 
+;;
 ;; 1. Download/build a recent emacs-lsp-booster from
 ;;    https://github.com/blahgeek/emacs-lsp-booster using the
 ;;    instructions there.
@@ -53,6 +53,11 @@
 I/O buffering is still performed."
   :group 'eglot
   :type 'boolean)
+
+(defcustom eglot-booster-ignored-modes nil
+  "A list of major modes that should not be boosted."
+  :group 'eglot
+  :type '(repeat function))
 
 (defun eglot-booster-plain-command (com)
   "Test if command COM is a plain eglot server command."
@@ -100,6 +105,7 @@ I/O buffering is still performed."
 		    eglot-booster--boost)))
     (cond
      ((and eglot-booster-no-remote-boost (file-remote-p default-directory)))
+     ((memq major-mode eglot-booster-ignored-modes))
      ((functionp contact)
       (setf (nth 3 args)
 	    (lambda (&optional interactive)
