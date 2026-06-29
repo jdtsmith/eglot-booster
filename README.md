@@ -1,5 +1,8 @@
 # eglot-booster: Boost eglot using lsp-booster
 
+> [!NOTE]
+> This repository is archived.  The fast new JSON parsers in Emacs v30 and v31 makes it for the most part unnecessary.
+
 The [emacs-lsp-booster](https://github.com/blahgeek/emacs-lsp-booster) project provides a rust-based wrapper program which substantially speeds up emacs' interactions with lsp servers.   This small package enables [eglot](https://github.com/joaotavora/eglot) to use it.
 
 ## Install/Usage
